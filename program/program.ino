@@ -12,9 +12,10 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
   robot.driveForward();
   delay(1000);
   robot.STOP();
-  delay(10000);
+  delay(1000);
+  robot.setSpeed(200); 
+  delay(1000);
 }
