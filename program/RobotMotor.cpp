@@ -85,3 +85,42 @@ int Robot::measureDistance(){
 	Fdistance = Fdistance/58;       
 	return (int)Fdistance;	
 }
+
+//void Robot::followLine(){
+//	// Read line detection values 
+//	trackSensorLeft = digitalRead(12); 
+//  trackSensorLeft = trackSensorLeft << 2;
+//	trackSensorCenter = digitalRead(4);
+//  trackSensorCenter = trackSensorCenter << 1;
+//	trackSensorRight = digitalRead(2);
+//	
+//	// Follow line algorithm  
+//	if((trackSensorRight == 0)&&trackSensorCenter&&trackSensorRight){
+//	  	Robot::driveRight(); 
+//	  	delay(2);
+//	    while(1){ // Turn right until line is centered. 
+//	      trackSensorCenter = digitalRead(4);
+//	      if(trackSensorCenter == 1){
+//	        Robot::driveRight();
+//	        delay(2);  
+//	      }else 
+//	        break;   
+//	      
+//	    }
+//	} else if(trackSensorRight&&trackSensorCenter&&(trackSensorLeft == 0)){
+//	    Robot::driveLeft();
+//		delay(2);
+//		while(1){
+//			trackSensorCenter = digitalRead(4);
+//			if(trackSensorCenter == 1){
+//				Robot::driveLeft(); 
+//				delay(2); 
+//			}else
+//				break; 
+//			
+//		}
+//	} else {
+//		Robot::driveForward();
+//		delay(2);
+//	}
+//}
