@@ -26,7 +26,7 @@ class Robot {
     void driveLeft();
     void STOP();
     void followLine();
-     
+    byte getLineSensorValues();
 	  // Declare pins
     void SETUP(); 
 
@@ -48,13 +48,32 @@ class Robot {
     int in4 = 6;    // if in3 low and in4 high, right wheels turn backward
     int ENA = 11;   // Enable Motor A (high or low) 
     int ENB = 5;    // Enable Motor B (high or low)
-    int ABS = 80;  // Max speed 0-255
+    int ABS = 115;  // Max speed 0-255
     int rightDistance = 0;
     int leftDistance = 0;
     int middleDistance = 0;
-    int trackSensorLeft; // If value 1, line is detected. 
-    int trackSensorCenter; // If value 2, line is detected.
-    int trackSensorRight; // If value 3, line is detected.
+    int sensorLeft; // If value 1, line is detected. 
+    int sensorCenter; // If value 2, line is detected.
+    int sensorRight; // If value 3, line is detected.
+   
+    /* Line Detection States 
+     * 0 - 000 = monitor
+     * 1 - 001 = Go Right
+     * 2 - 010 = Go Foward
+     * 3 - 011 = Go Right
+     * 4 - 100 = Go Left
+     * 5 = 101 = monitor 
+     * 6 = 110 = Go Left
+     * 7 = 111 = monitor
+     */
+    enum states{
+          idle = 0,
+          goRight = 1,
+          goForward = 2,
+          goCenterRight = 3,
+          goLeft = 4, 
+          goCenterLeft = 6     
+   } state;  
 };
 
 

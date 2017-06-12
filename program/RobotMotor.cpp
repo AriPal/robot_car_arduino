@@ -31,8 +31,8 @@ void Robot::driveBackward(){
 }
 
 void Robot::driveRight(){
-	 analogWrite(ENA,200);
-	 analogWrite(ENB,200);
+	 analogWrite(ENA,130);
+	 analogWrite(ENB,130);
 	 digitalWrite(in1,LOW);
 	 digitalWrite(in2,HIGH);
 	 digitalWrite(in3,HIGH);
@@ -41,8 +41,8 @@ void Robot::driveRight(){
 }
 
 void Robot::driveLeft(){
-	 analogWrite(ENA, 200); 
-	 analogWrite(ENB, 200); 
+	 analogWrite(ENA, 130); 
+	 analogWrite(ENB, 130); 
 	 digitalWrite(in1, HIGH); 
 	 digitalWrite(in2, LOW); 
 	 digitalWrite(in3, LOW); 
@@ -86,41 +86,54 @@ int Robot::measureDistance(){
 	return (int)Fdistance;	
 }
 
-//void Robot::followLine(){
-//	// Read line detection values 
-//	trackSensorLeft = digitalRead(12); 
-//  trackSensorLeft = trackSensorLeft << 2;
-//	trackSensorCenter = digitalRead(4);
-//  trackSensorCenter = trackSensorCenter << 1;
-//	trackSensorRight = digitalRead(2);
-//	
-//	// Follow line algorithm  
-//	if((trackSensorRight == 0)&&trackSensorCenter&&trackSensorRight){
-//	  	Robot::driveRight(); 
-//	  	delay(2);
-//	    while(1){ // Turn right until line is centered. 
-//	      trackSensorCenter = digitalRead(4);
-//	      if(trackSensorCenter == 1){
-//	        Robot::driveRight();
-//	        delay(2);  
-//	      }else 
-//	        break;   
-//	      
-//	    }
-//	} else if(trackSensorRight&&trackSensorCenter&&(trackSensorLeft == 0)){
-//	    Robot::driveLeft();
-//		delay(2);
-//		while(1){
-//			trackSensorCenter = digitalRead(4);
-//			if(trackSensorCenter == 1){
-//				Robot::driveLeft(); 
-//				delay(2); 
-//			}else
-//				break; 
-//			
-//		}
-//	} else {
-//		Robot::driveForward();
-//		delay(2);
-//	}
-//}
+byte Robot::getLineSensorValues(){
+  // Read line detection values 
+  sensorLeft = digitalRead(12); 
+  sensorCenter = digitalRead(4);
+  sensorRight = digitalRead(2);
+
+  // Convert to bitwise operation
+  sensorLeft = sensorLeft << 2;
+  sensorCenter = sensorCenter << 1;
+
+  byte sensorValue = 0;
+  sensorValue |= sensorLeft;
+  sensorValue |= sensorCenter;
+  sensorValue |= sensorRight; 
+
+  return sensorValue; 
+}
+
+
+void Robot::followLine(){
+  byte sensorValue = getLineSensorValues(); 
+  state = sensorValue; 
+  
+  switch(state){
+    case idle:
+      Serial.print("Idle");
+      break;
+
+    case goForward:
+      Serial.println("Go forward");
+      driveForward();
+
+      break;
+
+    case goCenterRight:
+    case goRight:
+      Serial.println("Go Right");
+      driveRight(); 
+      break;
+
+    case goCenterLeft: 
+    case goLeft: 
+      Serial.println("Go Left");      
+      driveLeft(); 
+      break; 
+
+    default:
+      Serial.println("Default state");
+      driveLeft(); 
+  } 
+}
