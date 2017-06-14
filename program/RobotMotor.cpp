@@ -1,15 +1,30 @@
  /*
   * RobotMotor.cpp - Implementation 
-  * Created by Dler H. June 2, 2017
+  * Created by Dler H. June 13, 2017
  */ 
  
 
 #include "RobotMotor.h"
 
-// Init Constructor
+// Initialize Constructor
 Robot::Robot(){};
 
+// Pin modes  
+void Robot::SETUP(){
+  myservo.attach(3,600,2400);// attach servo on pin 3 to servo object
+  Serial.begin(9600);     
+  pinMode(Echo,INPUT);    
+  pinMode(Trig,OUTPUT);  
+  pinMode(in1,OUTPUT);
+  pinMode(in2,OUTPUT);
+  pinMode(in3,OUTPUT);
+  pinMode(in4,OUTPUT);
+  pinMode(ENA,OUTPUT);
+  pinMode(ENB,OUTPUT);
+  STOP(); 
+}
 
+/* Car moves forward */
 void Robot::driveForward(){
 	 analogWrite(ENA,ABS);
 	 analogWrite(ENB,ABS);
@@ -20,6 +35,7 @@ void Robot::driveForward(){
 	 Serial.println("go forward!");
 }
 
+/* Car moves backward */
 void Robot::driveBackward(){
 	 analogWrite(ENA,ABS);
 	 analogWrite(ENB,ABS);
@@ -30,9 +46,10 @@ void Robot::driveBackward(){
 	 Serial.println("go back!");
 }
 
+/* Car turns right */
 void Robot::driveRight(){
-	 analogWrite(ENA,130);
-	 analogWrite(ENB,130);
+	 analogWrite(ENA,wheelRotationSpeed);
+	 analogWrite(ENB,wheelRotationSpeed);
 	 digitalWrite(in1,LOW);
 	 digitalWrite(in2,HIGH);
 	 digitalWrite(in3,HIGH);
@@ -40,9 +57,10 @@ void Robot::driveRight(){
 	 Serial.println("go right!");  
 }
 
+/* Car turns left */
 void Robot::driveLeft(){
-	 analogWrite(ENA, 130); 
-	 analogWrite(ENB, 130); 
+	 analogWrite(ENA,wheelRotationSpeed); 
+	 analogWrite(ENB,wheelRotationSpeed); 
 	 digitalWrite(in1, HIGH); 
 	 digitalWrite(in2, LOW); 
 	 digitalWrite(in3, LOW); 
@@ -50,31 +68,14 @@ void Robot::driveLeft(){
 	 Serial.println("Go left!");
 }
 
+/* Disables both engines */
 void Robot::STOP(){
 	 digitalWrite(ENA, LOW); 
 	 digitalWrite(ENB, LOW); 
 	 Serial.println("Stop!");
 }
 
-void Robot::setSpeed(int speed){
-	 ABS = speed; 
-}
-
-// Set pin modes 
-void Robot::SETUP(){
-	myservo.attach(3,600,2400);// attach servo on pin 3 to servo object
-	Serial.begin(9600);     
-	pinMode(Echo,INPUT);    
-	pinMode(Trig,OUTPUT);  
-	pinMode(in1,OUTPUT);
-	pinMode(in2,OUTPUT);
-	pinMode(in3,OUTPUT);
-	pinMode(in4,OUTPUT);
-	pinMode(ENA,OUTPUT);
-	pinMode(ENB,OUTPUT);
-	STOP();	
-}
-
+/* Measure & return distance */
 int Robot::measureDistance(){
 	digitalWrite(Trig, LOW);   
 	delayMicroseconds(2);
@@ -86,6 +87,42 @@ int Robot::measureDistance(){
 	return (int)Fdistance;	
 }
 
+/* Control Servo direction */
+void Robot::setServoDegree(int degree){
+  if(degree < 10){
+    degree = 10;
+    myservo.write(degree); 
+    delay(400); 
+  } else if (degree > 170){
+    servorRotationDegree = 170;
+    myservo.write(degree);
+    delay(400); 
+  } else {
+    servorRotationDegree = degree;
+    myservo.write(degree);
+    delay(400);
+  }
+}
+
+/* Servo turns right */
+void Robot::servoRight(){
+  myservo.write(10);
+  delay(400); 
+}
+
+/* Servo turns forward*/
+void Robot::servoFront(){
+  myservo.write(90);
+  delay(400);
+}
+
+/* Servo turns left */
+void Robot::servoLeft(){
+  myservo.write(170);
+  delay(400); 
+}
+
+/* Return line sensors reading */
 byte Robot::getLineSensorValues(){
   // Read line detection values 
   sensorLeft = digitalRead(12); 
@@ -95,7 +132,9 @@ byte Robot::getLineSensorValues(){
   // Convert to bitwise operation
   sensorLeft = sensorLeft << 2;
   sensorCenter = sensorCenter << 1;
+  sensorRight = sensorRight << 0;
 
+  // Add bits
   byte sensorValue = 0;
   sensorValue |= sensorLeft;
   sensorValue |= sensorCenter;
@@ -104,7 +143,7 @@ byte Robot::getLineSensorValues(){
   return sensorValue; 
 }
 
-
+/* Car follows line */
 void Robot::followLine(){
   byte sensorValue = getLineSensorValues(); 
   state = sensorValue; 
@@ -136,4 +175,14 @@ void Robot::followLine(){
       Serial.println("Default state");
       driveLeft(); 
   } 
+}
+
+// Set wheel speed
+void Robot::setSpeed(int speed){
+   ABS = speed; 
+}
+
+// Set turning speed 
+void Robot::setWheelRotationSpeed(int rotSpeed){
+  wheelRotationSpeed = rotSpeed; 
 }
