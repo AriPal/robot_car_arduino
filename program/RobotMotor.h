@@ -2,8 +2,7 @@
   * RobotMotor.h - Header 
   * Created by Dler H. June 13, 2017
  */ 
-
-// Invoke header once 
+ 
 #ifndef RobotMotor_h
 #define RobotMotor_h
 
@@ -14,10 +13,10 @@
 class Robot {
 
   public:
-  	// Define Constructor   
+  	/* Define Constructor */ 
     Robot();
 
-    // Define member initialization list  
+    /* Define member initialization list */
   	Robot(int in1, int in2, int in3, int in4) : in1(in1), in2(in2), in3(in3), in4(in4){}; 
    
     /* Driving modes */ 

@@ -3,7 +3,6 @@
   * Created by Dler H. June 13, 2017
  */ 
  
-
 #include "RobotMotor.h"
 
 // Initialize Constructor
